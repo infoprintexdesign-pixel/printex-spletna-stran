@@ -18,7 +18,7 @@ Ta repozitorij je celotna spletna stran **Printex Design**. Urejata jo dva člov
 ## Vsebina in odločitve
 - Podjetje: Printex Design. V nogi piše samo »© 2026 Printex Design« (ime s.p. je bilo namenoma odstranjeno).
 - Kraj (Ivančna Gorica) je bil namenoma odstranjen s strani.
-- Storitve (v tem vrstnem redu): **01 Nalepke, 02 Napisi in table, 03 Avtografika, 04 Tisk na tekstil.**
+- Storitve (v tem vrstnem redu): **01 Nalepke, 02 Table in napisi, 03 Avtografika, 04 Tisk na tekstil.**
 - NE ponujamo: roll up stojal, digitalnega tiska (letaki, vizitke), 3D nalepk, 3D napisov, foto platen, reklamnih transparentov. Paketov za vozila ni.
 - Kontakt: +386 51 273 304, +386 40 539 658, info.printexdesign@gmail.com.
 - Galerija pri Avtografiki: kamper (prvi), Koc gradnje, Elektro Zupančič, Hočevar, prikolica. Brez napisov na slikah; registrske tablice so zamegljene.
