@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Printex Design – tisk in nalepke</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script>
+document.documentElement.classList.add('js-anim');
+/* če se knjižnice za animacije ne naložijo, pokaži vse brez animacij */
+setTimeout(function(){if(!window.gsap)document.documentElement.classList.remove('js-anim')},2500);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Barve logotipa Printex Design: skoraj črna, bela in turkizna; zamaknjen turkizen sloj na naslovih, rezalne oznake kot detajl */
+  --bg:#100f0d;
+  --panel:#1a1917;
+  --line:#2e2d2a;
+  --text:#ffffff;
+  --muted:#a09e99;
+  --teal:#5ec8c1;
+  --teal-d:#3fa39c;
+  --c:var(--teal);
+  --m:var(--teal);
+  --y:#ffffff;
+  --display:"Unbounded", "Arial Black", system-ui, sans-serif;
+  --body:"Manrope", "Helvetica Neue", Arial, sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.65}
+a{color:inherit}
+h1,h2,h3{margin:0;font-family:var(--display);line-height:1.08;text-wrap:balance;font-weight:700}
+p{margin:0}
+img{max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+:focus-visible{outline:2px solid var(--y);outline-offset:3px}
+::selection{background:var(--teal);color:var(--bg)}
+
+/* zrnata tekstura papirja */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* zamaknjena registracija */
+.reg{position:relative;display:inline-block;color:var(--text)}
+.reg::before,.reg::after{content:attr(data-t);position:absolute;inset:0;mix-blend-mode:screen;pointer-events:none}
+.reg::before{color:var(--teal);transform:translate(var(--rx,4px),var(--ry,3px));opacity:.9;mix-blend-mode:normal;z-index:-1}
+.reg::after{display:none}
+.reg{z-index:0}
+
+/* glava */
+header{position:sticky;top:0;z-index:30;background:rgba(13,14,17,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:32px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.dots{display:grid;grid-template-columns:repeat(2,9px);gap:3px}
+.dots i{width:9px;height:9px;border-radius:50%}
+.dots i:nth-child(1){background:var(--c)}.dots i:nth-child(2){background:var(--m)}.dots i:nth-child(3){background:var(--y)}.dots i:nth-child(4){background:var(--text)}
+.logo b{font-family:var(--display);font-weight:900;font-size:19px;letter-spacing:.04em}
+.logo small{display:block;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:-1px}
+nav{display:flex;gap:26px;font-size:15px;font-weight:500}
+nav a{text-decoration:none;color:var(--muted);position:relative;padding:6px 0}
+nav a:hover{color:var(--text)}
+nav a[aria-current="page"]{color:var(--text)}
+nav a[aria-current="page"]::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--teal)}
+.cta-top{margin-left:auto;padding:10px 18px;border:1px solid var(--line);border-radius:999px;text-decoration:none;font-weight:700;font-size:14px}
+.cta-top:hover{border-color:var(--m);color:var(--m)}
+.menu-btn{display:none;margin-left:auto;background:none;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:8px 16px;font:inherit;font-size:14px;cursor:pointer}
+
+/* pogledi */
+.view{display:none}
+.view.on{display:block}
+
+/* rezalne oznake */
+.crop{position:absolute;width:22px;height:22px;border-color:var(--muted);opacity:.6}
+.crop.tl{top:0;left:0;border-top:1px solid;border-left:1px solid}
+.crop.tr{top:0;right:0;border-top:1px solid;border-right:1px solid}
+.crop.bl{bottom:0;left:0;border-bottom:1px solid;border-left:1px solid}
+.crop.br{bottom:0;right:0;border-bottom:1px solid;border-right:1px solid}
+
+/* domača stran – hero */
+.hero{position:relative;padding:80px 0 70px;overflow:hidden}
+.hero::before{content:"";position:absolute;width:720px;height:720px;right:-200px;top:-220px;border-radius:50%;
+  background:radial-gradient(circle at 45% 45%,rgba(94,200,193,.30),transparent 60%);filter:blur(20px)}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--m)}
+.hero h1{font-size:clamp(40px,6.4vw,86px);font-weight:900;letter-spacing:-.02em;line-height:.98}
+.hero h1 .grad{color:var(--teal)}
+.hero .sub{color:var(--muted);font-size:19px;margin-top:26px;max-width:30em}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 26px;border-radius:999px;font-weight:700;font-size:15px;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:var(--body);transition:transform .2s, background .2s, border-color .2s}
+.btn.primary{background:var(--text);color:var(--bg)}
+.btn.primary:hover{background:var(--teal);color:var(--bg);transform:translateY(-2px)}
+.btn.ghost{border-color:var(--line);color:var(--text);background:transparent}
+.btn.ghost:hover{border-color:var(--text)}
+.btn .arr{transition:transform .2s}
+.btn:hover .arr{transform:translateX(4px)}
+
+.collage{position:relative;height:520px}
+.collage figure{position:absolute;margin:0;border-radius:14px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);border:1px solid var(--line)}
+.collage img{display:block;width:100%;height:100%;object-fit:cover}
+.collage .p1{width:62%;height:78%;left:0;top:4%;transform:rotate(-3deg)}
+.collage .p2{width:52%;height:56%;right:0;top:0;transform:rotate(4deg)}
+.collage .p3{width:50%;height:46%;right:8%;bottom:0;transform:rotate(-1.5deg)}
+.collage .tag{position:absolute;left:4%;bottom:6%;z-index:3;background:var(--teal);color:var(--bg);font-family:var(--display);font-weight:700;font-size:13px;padding:10px 14px;border-radius:6px;transform:rotate(-4deg)}
+
+/* trak */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;white-space:nowrap;padding:18px 0}
+.strip .track{display:inline-flex;gap:40px;animation:slide 32s linear infinite;font-family:var(--display);font-size:22px;font-weight:700;text-transform:uppercase}
+.strip span{display:inline-flex;align-items:center;gap:40px}
+.strip span::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--m)}
+.strip span:nth-child(3n+2)::after{background:var(--c)}
+.strip span:nth-child(3n)::after{background:var(--y)}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+/* storitve – seznam */
+section{padding:96px 0}
+.sec-head{display:flex;justify-content:space-between;align-items:end;gap:24px;flex-wrap:wrap;margin-bottom:44px}
+.sec-head h2{font-size:clamp(30px,4vw,52px);font-weight:900;letter-spacing:-.01em}
+.sec-head p{color:var(--muted);max-width:26em}
+.svc-list{border-top:1px solid var(--line)}
+.svc{display:grid;grid-template-columns:80px 1fr 1.1fr 60px;gap:24px;align-items:center;padding:30px 8px;border-bottom:1px solid var(--line);text-decoration:none;position:relative;transition:background .25s,padding .25s}
+.svc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--k);transform:scaleY(0);transition:transform .25s}
+.svc:hover{background:var(--panel);padding-left:20px}
+.svc:hover::before{transform:scaleY(1)}
+.svc .n{font-family:var(--display);color:var(--k);font-size:15px}
+.svc h3{font-size:clamp(22px,2.6vw,32px)}
+.svc p{color:var(--muted)}
+.svc .go{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;justify-self:end;transition:background .25s,border-color .25s,transform .25s}
+.svc:hover .go{background:var(--teal);border-color:var(--teal);color:var(--bg);transform:rotate(-45deg)}
+
+/* koraki */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.step{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:34px 30px}
+.step .num{font-family:var(--display);font-size:56px;font-weight:900;line-height:1;margin-bottom:18px}
+.step .num{color:var(--teal)}
+.step h3{font-size:20px;margin-bottom:8px}
+.step p{color:var(--muted);font-size:16px}
+
+/* podstran – pas */
+.banner{position:relative;padding:84px 0 70px;border-bottom:1px solid var(--line);overflow:hidden}
+.banner::before{content:"";position:absolute;width:520px;height:520px;right:-160px;top:-260px;border-radius:50%;background:radial-gradient(circle,var(--k,rgba(94,200,193,.35)),transparent 65%);opacity:.5;filter:blur(10px)}
+.banner .wrap{position:relative}
+.crumbs{font-size:14px;color:var(--muted);margin-bottom:22px}
+.crumbs a{text-decoration:none;color:var(--text)}
+.crumbs a:hover{color:var(--m)}
+.banner h1{font-size:clamp(40px,7vw,96px);font-weight:900;letter-spacing:-.02em;text-transform:uppercase}
+.banner p{color:var(--muted);font-size:19px;margin-top:20px;max-width:34em}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.kicker{font-size:13px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--k,var(--m));margin-bottom:14px}
+.split h2,.big-h{font-size:clamp(28px,3.4vw,42px);font-weight:700;margin-bottom:20px}
+.split p{color:var(--muted);margin-bottom:18px}
+.ticks{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:12px}
+.ticks li{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start}
+.ticks li::before{content:"";width:10px;height:10px;margin-top:8px;border-radius:2px;background:var(--k,var(--m))}
+.ticks b{color:var(--text)}
+.ticks span{color:var(--muted)}
+.note{font-size:15px;color:var(--muted);border-left:2px solid var(--y);padding-left:14px;margin-top:20px}
+.visual{position:relative;padding:18px}
+.visual .art{border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.visual svg{display:block;width:100%;height:auto}
+
+/* tabela */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+table{width:100%;border-collapse:collapse;min-width:560px;font-size:16px}
+th,td{text-align:left;padding:18px 22px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-family:var(--display);font-size:14px;font-weight:700;color:var(--text)}
+thead th:nth-child(2){color:var(--c)}thead th:nth-child(3){color:var(--m)}
+tbody th{font-weight:700;width:26%}
+tbody td{color:var(--muted)}
+tbody tr:last-child th,tbody tr:last-child td{border-bottom:0}
+
+/* galerija */
+.gallery{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:220px;gap:14px}
+.gallery figure{margin:0;position:relative;overflow:hidden;border-radius:12px;cursor:zoom-in;background:var(--panel);border:1px solid var(--line)}
+.gallery figure:nth-child(1){grid-column:span 3;grid-row:span 2}
+.gallery figure:nth-child(2){grid-column:span 3}
+.gallery figure:nth-child(3){grid-column:span 3}
+.gallery figure:nth-child(4){grid-column:span 3}
+.gallery figure:nth-child(5){grid-column:span 3}
+.gallery img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s, filter .3s;filter:saturate(.9)}
+.gallery figure:hover img{transform:scale(1.05);filter:saturate(1.05)}
+.gallery figure::after{content:"+";position:absolute;right:12px;top:12px;width:34px;height:34px;border-radius:50%;background:rgba(13,14,17,.7);display:grid;place-items:center;font-size:20px;opacity:0;transition:opacity .2s}
+.gallery figure:hover::after{opacity:1}
+
+.lb{position:fixed;inset:0;z-index:60;background:rgba(5,5,7,.95);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.lb[hidden]{display:none}
+.lb img{max-width:100%;max-height:82vh;border-radius:8px}
+.lb p{margin-top:14px;color:var(--muted);font-size:14px}
+.lb-x{position:absolute;top:12px;right:18px;background:none;border:0;color:#fff;font-size:42px;cursor:pointer;line-height:1}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid var(--line);color:#fff;font-size:34px;width:52px;height:52px;border-radius:50%;cursor:pointer}
+.lb-nav:hover{background:var(--teal);border-color:var(--teal);color:var(--bg)}
+.lb-nav.prev{left:16px}.lb-nav.next{right:16px}
+
+/* kontakt */
+.contact-box{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:56px;overflow:hidden}
+.contact-box::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:var(--teal)}
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:start}
+.contact h2{font-size:clamp(30px,3.8vw,48px);font-weight:900;margin-bottom:18px}
+.contact .lead{color:var(--muted);margin-bottom:30px}
+.info{display:grid;gap:0}
+.info div{display:grid;grid-template-columns:140px 1fr;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+.info span{color:var(--muted);font-size:14px}
+.info b{font-weight:500}
+form{display:grid;gap:16px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{display:grid;gap:8px;font-size:14px;font-weight:500;color:var(--muted)}
+input,select,textarea{font:inherit;font-size:16px;padding:14px 16px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--m);outline:none}
+textarea{min-height:140px;resize:vertical}
+#result{display:none;border:1px solid var(--teal);border-radius:12px;padding:18px;background:rgba(94,200,193,.07)}
+#result.show{display:block}
+#result pre{white-space:pre-wrap;font-family:var(--body);font-size:15px;margin:10px 0 14px;color:var(--text)}
+#err{color:var(--y);display:none;font-weight:500}
+
+footer{border-top:1px solid var(--line);padding:56px 0 28px;font-size:15px;color:var(--muted)}
+.cols{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px}
+footer h4{margin:0 0 14px;font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--text)}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+footer a{text-decoration:none}
+footer a:hover{color:var(--text)}
+.copy{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:14px}
+
+
+/* ===== animacije (GSAP + Lenis) ===== */
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+.hero h1 .ln{display:block;overflow:hidden;padding:0 .12em .1em 0;margin-bottom:-.1em}
+.hero h1 .ln>span{display:inline-block}
+html.js-anim .hero h1 .ln>span{transform:translateY(115%)}
+html.js-anim .hero .eyebrow,html.js-anim .hero .sub,html.js-anim .hero .btns,html.js-anim .collage figure,html.js-anim .collage .tag{opacity:0}
+.collage{perspective:1200px}
+.collage .tilt{position:absolute;inset:0;transform-style:preserve-3d}
+.collage figure img{transform:scale(1.18)}
+.collage .p2 img{transform:none}
+#prog{position:fixed;left:0;top:0;height:3px;width:100%;background:var(--teal);transform:scaleX(0);transform-origin:0 50%;z-index:40;pointer-events:none}
+html.js-anim .strip .track{animation:none}
+.gallery.two{grid-template-columns:1fr 1fr!important;grid-auto-rows:auto!important}
+.gallery.two figure:nth-child(n){grid-column:auto!important;grid-row:auto!important;aspect-ratio:1/1}
+@media (max-width:980px){
+  .hero-grid,.split,.contact{grid-template-columns:1fr}
+  .collage{height:420px}
+  .steps{grid-template-columns:1fr}
+  .svc{grid-template-columns:50px 1fr 46px}
+  .svc p{display:none}
+  .cols{grid-template-columns:1fr}
+  .contact-box{padding:32px 22px}
+  .menu-btn{display:block}
+  .cta-top{display:none}
+  .bar{flex-wrap:wrap;gap:12px}
+  nav{display:none;width:100%;flex-direction:column;gap:2px;padding-bottom:10px}
+  nav.open{display:flex}
+  .gallery{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
+  .gallery figure:nth-child(n){grid-column:span 1;grid-row:span 1}
+  .gallery figure:nth-child(1){grid-column:span 2;grid-row:span 2}
+}
+@media (max-width:520px){
+  .two{grid-template-columns:1fr}
+  .info div{grid-template-columns:1fr;gap:2px}
+  section{padding:70px 0}
+  .collage{height:340px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important}
+  .strip .track{animation:none}
+}
+</style>
+</head>
+<body>
+
+<div id="prog" aria-hidden="true"></div>
+<header>
+  <div class="wrap bar">
+    <a class="logo" href="#domov" aria-label="Printex Design, domača stran"><img src="img/logo.png" alt="Printex Design" width="94" height="48" style="display:block;height:48px;width:auto"></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">Meni</button>
+    <nav id="nav" aria-label="Glavni meni">
+      <a href="#domov">Domov</a>
+      <a href="#nalepke">Nalepke</a>
+      <a href="#table-in-napisi">Table in napisi</a>
+      <a href="#avtografika">Avtografika</a>
+      <a href="#tisk-na-tekstil">Tekstil</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+    <a class="cta-top" href="#kontakt">Povpraševanje</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ DOMAČA STRAN ============ -->
+<div class="view" data-view="domov" data-title="Printex Design – tisk in nalepke">
+  <div class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">Tisk in grafika</div>
+        <h1><span class="ln"><span>Vaša znamka</span></span><span class="ln"><span>na <span class="grad">pravem</span></span></span><span class="ln"><span><span class="reg" data-t="mestu.">mestu.</span></span></span></h1>
+        <p class="sub">Nalepke za karkoli, table in napisi, avtografika in potisk oblačil. Pripravimo grafiko, natisnemo, izrežemo in namestimo.</p>
+        <div class="btns">
+          <a class="btn primary" href="#kontakt">Pošlji povpraševanje <span class="arr">→</span></a>
+          <a class="btn ghost" href="#avtografika">Poglej naša dela</a>
+        </div>
+      </div>
+      <div class="collage" aria-hidden="true"><div class="tilt">
+        <figure class="p1"><img src="img/kamper.webp" alt=""></figure>
+        <figure class="p2"><img src="img/majice-epj.webp" alt=""></figure>
+        <figure class="p3"><img src="img/kros-ktm-233.webp" alt=""></figure>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="strip" aria-hidden="true">
+    <div class="track">
+      <span>Nalepke</span><span>Table in napisi</span><span>Avtografika</span><span>Tisk na tekstil</span><span>Rezana folija</span><span>Priprava grafike</span>
+      <span>Nalepke</span><span>Table in napisi</span><span>Avtografika</span><span>Tisk na tekstil</span><span>Rezana folija</span><span>Priprava grafike</span>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Kaj delamo</h2>
+        <p>Izberite storitev in poglejte podrobnosti.</p>
+      </div>
+      <div class="svc-list">
+        <a class="svc" href="#nalepke" style="--k:var(--teal)"><span class="n">01</span><h3>Nalepke</h3><p>Za steklenice, avto, kros motor, telefon … kamorkoli jo želite nalepiti.</p><span class="go" aria-hidden="true">→</span></a>
+        <a class="svc" href="#table-in-napisi" style="--k:var(--teal)"><span class="n">02</span><h3>Table in napisi</h3><p>Table, napisi na izložbah, delovni čas in oznake.</p><span class="go" aria-hidden="true">→</span></a>
+        <a class="svc" href="#avtografika" style="--k:var(--teal)"><span class="n">03</span><h3>Avtografika</h3><p>Napisi in grafike na vozilih, prikolicah in plovilih.</p><span class="go" aria-hidden="true">→</span></a>
+        <a class="svc" href="#tisk-na-tekstil" style="--k:var(--teal)"><span class="n">04</span><h3>Tisk na tekstil</h3><p>Majice, puloverji in delovna oblačila z vašim motivom.</p><span class="go" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head">
+        <h2>Kako poteka naročilo</h2>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="num">01</div><h3>Povpraševanje</h3><p>Napišete, kaj potrebujete, in pošljete logotip ali skico.</p></div>
+        <div class="step"><div class="num">02</div><h3>Ponudba in osnutek</h3><p>Pripravimo ceno in grafiko. Izdelamo šele, ko osnutek potrdite.</p></div>
+        <div class="step"><div class="num">03</div><h3>Izdelava in montaža</h3><p>Natisnemo, izrežemo in po želji namestimo na vozilo, steklo ali steno.</p></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ NALEPKE ============ -->
+<div class="view" data-view="nalepke" data-title="Nalepke – Printex Design" style="--k:var(--teal)">
+  <div class="banner" style="--k:rgba(94,200,193,.45)"><div class="wrap">
+    <div class="crumbs"><a href="#domov">Domov</a> / Nalepke</div>
+    <h1><span class="reg" data-t="Nalepke">Nalepke</span></h1>
+    <p>Nalepke po meri za karkoli: steklenice, avto, kros motor, telefon … kamorkoli jo želite nalepiti.</p>
+  </div></div>
+  <section>
+    <div class="wrap split">
+      <div>
+        <div class="kicker">Po vaši želji</div>
+        <h2>Vaša ideja, natisnjena in izrezana</h2>
+        <p>Pošljite sliko, logotip ali samo idejo. Grafiko pripravimo, natisnemo in izrežemo točno po obliki.</p>
+        <ul class="ticks">
+          <li><span><b>Etikete</b> za steklenice, kozarce in embalažo</span></li>
+          <li><span><b>Nalepke za avto</b>: napisi, logotipi, dekor</span></li>
+          <li><span><b>Kros nalepke</b> za motorje, čelade in opremo</span></li>
+          <li><span><b>Nalepke za telefon</b>, laptop in drugo</span></li>
+          <li><span><b>Promocijske nalepke</b> z logotipom podjetja</span></li>
+        </ul>
+        <p class="note">Natisnemo tudi samo nekaj kosov. Pri večjih količinah je cena na kos nižja.</p>
+        <div class="btns"><a class="btn primary" href="#kontakt">Pošlji povpraševanje <span class="arr">→</span></a></div>
+      </div>
+      <div class="visual">
+        <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        <div class="art"><svg viewBox="0 0 400 300" aria-hidden="true">
+          <rect width="400" height="300" fill="#1a1917"/>
+          <rect x="70" y="30" width="260" height="240" rx="6" fill="#ffffff"/>
+          <g fill="none" stroke="#100f0d" stroke-width="1.2" stroke-dasharray="4 3">
+            <circle cx="140" cy="100" r="46"/><rect x="200" y="56" width="104" height="88" rx="18"/>
+            <path d="M96 172 h96 l14 30 l-14 30 h-96 l-14 -30 z"/><circle cx="262" cy="206" r="42"/>
+          </g>
+          <circle cx="140" cy="100" r="38" fill="#5ec8c1"/>
+          <text x="140" y="106" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="15" fill="#100f0d">LOGO</text>
+          <rect x="207" y="63" width="90" height="74" rx="13" fill="#100f0d"/>
+          <text x="252" y="106" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="15" fill="#5ec8c1">#194</text>
+          <path d="M100 179 h88 l11 23 l-11 23 h-88 l-11 -23 z" fill="#100f0d"/>
+          <text x="144" y="207" text-anchor="middle" font-family="Unbounded, Arial" font-weight="700" font-size="13" fill="#ffffff">DOMAČE</text>
+          <circle cx="262" cy="206" r="35" fill="#5ec8c1"/>
+          <text x="262" y="212" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="14" fill="#100f0d">KROS</text>
+        </svg></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TABLE IN NAPISI ============ -->
+<div class="view" data-view="table-in-napisi" data-title="Table in napisi – Printex Design" style="--k:var(--teal)">
+  <div class="banner" style="--k:rgba(94,200,193,.45)"><div class="wrap">
+    <div class="crumbs"><a href="#domov">Domov</a> / Table in napisi</div>
+    <h1><span class="reg" data-t="Table in napisi">Table in napisi</span></h1>
+    <p>Table za vhode in pisarne, napisi za izložbe in oznake, ki stranke pripeljejo do vas.</p>
+  </div></div>
+  <section>
+    <div class="wrap split">
+      <div>
+        <div class="kicker">Kaj izdelamo</div>
+        <h2>Da vas stranke najdejo že od daleč</h2>
+        <p>Pripravimo grafiko, jo natisnemo ali izrežemo iz folije in tablo ali napis namestimo na steno, vrata ali steklo.</p>
+        <ul class="ticks">
+          <li><span><b>Table</b> za vhode, pisarne, lokale in gradbišča</span></li>
+          <li><span><b>Napisi na izložbah</b>: logotip, ime, ponudba</span></li>
+          <li><span><b>Delovni čas</b> in kontakti na vratih</span></li>
+          <li><span><b>Usmerjevalne oznake</b>: parkirišče, vhod, recepcija</span></li>
+        </ul>
+        <div class="btns"><a class="btn primary" href="#kontakt">Pošlji povpraševanje <span class="arr">→</span></a></div>
+      </div>
+      <div class="visual">
+        <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        <div class="art"><svg viewBox="0 0 400 300" aria-hidden="true">
+          <rect width="400" height="300" fill="#1a1917"/>
+          <rect x="60" y="56" width="280" height="128" rx="6" fill="#100f0d" stroke="#2a2d35"/>
+          <text x="200" y="118" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="30" fill="#5ec8c1" opacity=".8" transform="translate(-2 1)">VAŠ LOKAL</text>
+          <text x="200" y="118" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="30" fill="#5ec8c1" opacity=".8" transform="translate(2 -1)">VAŠ LOKAL</text>
+          <text x="200" y="118" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="30" fill="#ffffff">VAŠ LOKAL</text>
+          <rect x="150" y="136" width="100" height="4" fill="#5ec8c1"/>
+          <text x="200" y="164" text-anchor="middle" font-family="Manrope, Arial" font-size="14" fill="#9097a3">odprto vsak dan 8–20</text>
+          <rect x="120" y="206" width="160" height="94" fill="#5ec8c1" opacity=".12" stroke="#2a2d35"/>
+          <text x="200" y="250" text-anchor="middle" font-family="Manrope, Arial" font-weight="700" font-size="15" fill="#ffffff">PON–PET 8–16</text>
+        </svg></div>
+      </div>
+    </div>
+  </section>
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="sec-head"><h2>Rezana folija ali tiskana nalepka?</h2><p>Kratka primerjava, da lažje izberete.</p></div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th></th><th>Rezana folija</th><th>Tiskana nalepka</th></tr></thead>
+          <tbody>
+            <tr><th>Barve</th><td>ena barva na napis (več barv v slojih)</td><td>polnobarvno, tudi prelivi in fotografije</td></tr>
+            <tr><th>Ozadje</th><td>brez ozadja, vidijo se samo črke</td><td>z ozadjem, izrezana po obliki</td></tr>
+            <tr><th>Najbolj primerno za</th><td>napise na steklih, izložbah, vozilih</td><td>logotipe, etikete, table</td></tr>
+            <tr><th>Velikost</th><td>do širine 1 m, večje iz delov</td><td>do širine 1 m, večje iz delov</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ AVTOGRAFIKA ============ -->
+<div class="view" data-view="avtografika" data-title="Avtografika – Printex Design" style="--k:var(--teal)">
+  <div class="banner" style="--k:rgba(94,200,193,.45)"><div class="wrap">
+    <div class="crumbs"><a href="#domov">Domov</a> / Avtografika</div>
+    <h1><span class="reg" data-t="Avtografika">Avtografika</span></h1>
+    <p>Vaše vozilo je vaša najboljša reklama.</p>
+    <div class="btns"><a class="btn primary" href="#kontakt">Pošlji povpraševanje <span class="arr">→</span></a></div>
+  </div></div>
+  <section>
+    <div class="wrap">
+      <div class="sec-head"><h2>Naša dela</h2><p>Kliknite sliko za povečavo.</p></div>
+      <div class="gallery" id="gal">
+        <figure><img src="img/kamper.webp" alt="Kombi z dekorativnimi črtami" loading="lazy"></figure>
+        <figure><img src="img/koc-gradnje.webp" alt="Renault Master z napisi" loading="lazy"></figure>
+        <figure><img src="img/elektro-zupancic.webp" alt="VW Transporter z napisi na steklih" loading="lazy"></figure>
+        <figure><img src="img/hocevar.webp" alt="Tovornjak MAN z oznakami na kabini" loading="lazy"></figure>
+        <figure><img src="img/prikolica.webp" alt="Prikolica z grafikami in številko" loading="lazy"></figure>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ TISK NA TEKSTIL ============ -->
+<div class="view" data-view="tisk-na-tekstil" data-title="Tisk na tekstil – Printex Design" style="--k:var(--teal)">
+  <div class="banner" style="--k:rgba(94,200,193,.45)"><div class="wrap">
+    <div class="crumbs"><a href="#domov">Domov</a> / Tisk na tekstil</div>
+    <h1><span class="reg" data-t="Tekstil">Tekstil</span></h1>
+    <p>Majice, puloverji in delovna oblačila z vašim logotipom ali motivom.</p>
+  </div></div>
+  <section>
+    <div class="wrap split">
+      <div>
+        <div class="kicker">Oblačila</div>
+        <h2>Potisk majic, puloverjev in delovnih oblačil</h2>
+        <p>Oblačila izberete iz obsežnega kataloga modelov, barv in velikosti. Naročimo jih, potisnemo z vašim motivom in pripravimo za prevzem.</p>
+        <ul class="ticks">
+          <li><span><b>Podjetja</b>: delovna oblačila z logotipom</span></li>
+          <li><span><b>Ekipe in društva</b>: majice z imeni in številkami</span></li>
+          <li><span><b>Prireditve</b>: majice za organizatorje in udeležence</span></li>
+          <li><span><b>Darila</b>: majica ali pulover z lastno sliko</span></li>
+        </ul>
+        <p class="note">Natisnemo tudi samo en kos. Pri večjih količinah je cena na kos nižja.</p>
+        <div class="btns"><a class="btn primary" href="#kontakt">Pošlji motiv <span class="arr">→</span></a></div>
+      </div>
+      <div class="visual">
+        <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        <div class="art"><svg viewBox="0 0 400 300" aria-hidden="true">
+          <rect width="400" height="300" fill="#1a1917"/>
+          <path d="M150 50 L110 70 L70 115 L105 140 L125 120 V255 H275 V120 L295 140 L330 115 L290 70 L250 50 Q200 80 150 50 Z" fill="#ffffff"/>
+          <circle cx="188" cy="150" r="30" fill="#5ec8c1" style="mix-blend-mode:multiply"/>
+          <circle cx="212" cy="150" r="30" fill="#5ec8c1" style="mix-blend-mode:multiply"/>
+          <circle cx="200" cy="170" r="30" fill="#5ec8c1" style="mix-blend-mode:multiply"/>
+          <text x="200" y="232" text-anchor="middle" font-family="Unbounded, Arial" font-weight="900" font-size="16" fill="#100f0d">VAŠ MOTIV</text>
+        </svg></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ KONTAKT ============ -->
+<div class="view" data-view="kontakt" data-title="Kontakt – Printex Design">
+  <div class="banner"><div class="wrap">
+    <div class="crumbs"><a href="#domov">Domov</a> / Kontakt</div>
+    <h1><span class="reg" data-t="Kontakt">Kontakt</span></h1>
+    <p>Napišite, kaj potrebujete. Logotip ali fotografijo priložite v e-pošti.</p>
+  </div></div>
+</div>
+
+<!-- skupni kontakt -->
+<section id="povprasevanje">
+  <div class="wrap">
+    <div class="contact-box">
+      <div class="contact">
+        <div>
+          <h2>Pošljite povpraševanje</h2>
+          <p class="lead">Odgovorimo s ponudbo in osnutkom grafike.</p>
+          <div class="info">
+            <div><span>Telefon</span><b><a href="tel:+38651273304" style="text-decoration:none">+386 51 273 304</a><br><a href="tel:+38640539658" style="text-decoration:none">+386 40 539 658</a></b></div>
+            <div><span>E-pošta</span><b><a href="mailto:info.printexdesign@gmail.com" style="text-decoration:none">info.printexdesign@gmail.com</a></b></div>
+          </div>
+        </div>
+        <form id="f" novalidate>
+          <input type="checkbox" name="botcheck" id="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+          <div class="two">
+            <label for="ime">Ime in priimek / podjetje<input id="ime" autocomplete="name"></label>
+            <label for="kontakt-polje">Telefon ali e-pošta<input id="kontakt-polje"></label>
+          </div>
+          <label for="opis">Kaj potrebujete?<textarea id="opis" placeholder="npr. nalepke z logotipom, napis na kombi, 20 majic … količina, mere, rok"></textarea></label>
+          <div><button class="btn primary" type="submit">Pošlji povpraševanje <span class="arr">→</span></button></div>
+          <p id="ok" role="status" style="display:none;border:1px solid var(--teal);border-radius:12px;padding:18px;background:rgba(94,200,193,.07)"><b>Hvala, povpraševanje je poslano.</b><br>Odgovorimo vam v najkrajšem možnem času.</p>
+          <p id="err">Vpišite ime in kontakt, da vas lahko pokličemo nazaj.</p>
+          <div id="result" role="status" aria-live="polite">
+            <b>Sporočila ni bilo mogoče poslati samodejno.</b> Pošljite ga na info.printexdesign@gmail.com.
+            <pre id="msg"></pre>
+            <div class="btns" style="margin-top:0">
+              <a class="btn primary" id="mailBtn" href="mailto:info.printexdesign@gmail.com">Odpri v e-pošti <span class="arr">→</span></a>
+              <button class="btn ghost" type="button" id="copy">Kopiraj sporočilo</button>
+            </div>
+            <p style="color:var(--muted);font-size:14px;margin-top:10px">Če se e-pošta ne odpre, kopirajte sporočilo in ga pošljite na info.printexdesign@gmail.com.</p>
+            <span id="copied" style="margin-left:10px;color:var(--muted)"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Povečana slika" hidden>
+  <button type="button" class="lb-x" id="lbx" aria-label="Zapri">×</button>
+  <button type="button" class="lb-nav prev" id="lbp" aria-label="Prejšnja slika">‹</button>
+  <img id="lbimg" alt="">
+  <button type="button" class="lb-nav next" id="lbn" aria-label="Naslednja slika">›</button>
+  <p id="lbcap"></p>
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="logo" href="#domov" aria-label="Domača stran"><img src="img/logo.png" alt="Printex Design" width="94" height="48" style="display:block;height:48px;width:auto"></a>
+        <p style="margin-top:16px;max-width:22em">Tisk, razrez in montaža.</p>
+      </div>
+      <div><h4>Ponudba</h4><ul><li><a href="#nalepke">Nalepke</a></li><li><a href="#table-in-napisi">Table in napisi</a></li><li><a href="#avtografika">Avtografika</a></li><li><a href="#tisk-na-tekstil">Tisk na tekstil</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul><li><a href="tel:+38651273304">+386 51 273 304</a></li><li><a href="tel:+38640539658">+386 40 539 658</a></li><li><a href="mailto:info.printexdesign@gmail.com">info.printexdesign@gmail.com</a></li></ul></div>
+    </div>
+    <div class="copy"><span>© 2026 Printex Design</span><span>Tisk · Razrez · Montaža</span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  /* podstrani po #imenu */
+  var views=[].slice.call(document.querySelectorAll('.view')),links=[].slice.call(document.querySelectorAll('nav a'));
+  var sel=document.getElementById('storitev'),nav=document.getElementById('nav'),mb=document.getElementById('menuBtn');
+  var names={'nalepke':'Nalepke','table-in-napisi':'Table in napisi','avtografika':'Avtografika','tisk-na-tekstil':'Tisk na tekstil'};
+  function route(){
+    var h=(location.hash||'').replace('#','')||'domov';
+    if(!views.some(function(v){return v.dataset.view===h}))h='domov';
+    views.forEach(function(v){var on=v.dataset.view===h;v.classList.toggle('on',on);if(on)document.title=v.dataset.title});
+    links.forEach(function(a){if(a.getAttribute('href')==='#'+h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+    if(names[h]&&sel)sel.value=names[h];
+    nav.classList.remove('open');mb.setAttribute('aria-expanded','false');
+    if(window.PX){window.PX.route(h)}else if(h==='kontakt'){document.getElementById('povprasevanje').scrollIntoView()}else{window.scrollTo(0,0)}
+  }
+  window.addEventListener('hashchange',route);route();
+  mb.addEventListener('click',function(){var o=nav.classList.toggle('open');mb.setAttribute('aria-expanded',o?'true':'false')});
+
+  /* galerija – povečava */
+  var allF=[].slice.call(document.querySelectorAll('.gallery figure')),figs=[],lb=document.getElementById('lb'),lbimg=document.getElementById('lbimg'),lbcap=document.getElementById('lbcap'),cur=0,lastF=null;
+  function show(i){cur=(i+figs.length)%figs.length;var im=figs[cur].querySelector('img');lbimg.src=im.src;lbimg.alt=im.alt;lbcap.textContent=(cur+1)+' / '+figs.length}
+  allF.forEach(function(fg){var grp=[].slice.call(fg.parentNode.querySelectorAll('figure')),i=grp.indexOf(fg);fg.tabIndex=0;fg.setAttribute('role','button');fg.setAttribute('aria-label','Povečaj sliko '+(i+1));
+    var open=function(){lastF=fg;figs=grp;show(i);lb.hidden=false;if(window.PX)PX.lock(true);document.getElementById('lbx').focus()};
+    fg.addEventListener('click',open);fg.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open()}})});
+  function closeLb(){lb.hidden=true;if(window.PX)PX.lock(false);if(lastF)lastF.focus()}
+  document.getElementById('lbx').addEventListener('click',closeLb);
+  document.getElementById('lbp').addEventListener('click',function(){show(cur-1)});
+  document.getElementById('lbn').addEventListener('click',function(){show(cur+1)});
+  lb.addEventListener('click',function(e){if(e.target===lb)closeLb()});
+  document.addEventListener('keydown',function(e){if(lb.hidden)return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1)});
+
+  /* povpraševanje */
+  var f=document.getElementById('f'),res=document.getElementById('result'),msg=document.getElementById('msg'),err=document.getElementById('err');
+  var v=function(id){return document.getElementById(id).value.trim()};
+  /* Web3Forms: ključ vpiši spodaj (dobiš ga na web3forms.com za info.printexdesign@gmail.com) */
+  var W3F_KEY='d0f7de69-439a-4f84-8a84-b7acba1e3006';
+  var btn=f.querySelector('button[type="submit"]'),ok=document.getElementById('ok');
+  function fallback(){
+    document.getElementById('mailBtn').href='mailto:info.printexdesign@gmail.com?subject='+encodeURIComponent('Povpraševanje – '+v('ime'))+'&body='+encodeURIComponent(msg.textContent);
+    res.classList.add('show');document.getElementById('copied').textContent='';
+  }
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    if(!v('ime')||!v('kontakt-polje')){err.style.display='block';res.classList.remove('show');return}
+    err.style.display='none';ok.style.display='none';res.classList.remove('show');
+    msg.textContent='Povpraševanje – Printex Design\n\nIme: '+v('ime')+'\nKontakt: '+v('kontakt-polje')+(v('opis')?'\n\nOpis:\n'+v('opis'):'');
+    if(!W3F_KEY||W3F_KEY.indexOf('VPISI')===0){fallback();return}
+    btn.disabled=true;var lbl=btn.innerHTML;btn.textContent='Pošiljam …';
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({access_key:W3F_KEY,subject:'Novo povpraševanje – '+v('ime'),from_name:'Printex Design spletna stran',
+        ime:v('ime'),kontakt:v('kontakt-polje'),sporocilo:v('opis')||'(brez opisa)',botcheck:document.getElementById('botcheck').checked})})
+    .then(function(r){return r.json()})
+    .then(function(d){if(d&&d.success){ok.style.display='block';f.reset()}else{fallback()}})
+    .catch(fallback)
+    .then(function(){btn.disabled=false;btn.innerHTML=lbl});
+  });
+  document.getElementById('copy').addEventListener('click',function(){
+    var out=document.getElementById('copied'),fail=function(){out.textContent='Kopiranje ni uspelo. Označite besedilo in ga kopirajte ročno.'};
+    try{navigator.clipboard.writeText(msg.textContent).then(function(){out.textContent='Kopirano.'},fail)}catch(e){fail()}
+  });
+})();
+</script>
+<script>
+/* ===== animacije: GSAP + ScrollTrigger + Lenis ===== */
+window.addEventListener('DOMContentLoaded',function(){
+  var root=document.documentElement;
+  if(!window.gsap||!window.ScrollTrigger){root.classList.remove('js-anim');return}
+  gsap.registerPlugin(ScrollTrigger);
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine=window.matchMedia('(pointer: fine)').matches;
+  var lenis=null;
+
+  if(reduce){root.classList.remove('js-anim')}
+  else if(window.Lenis){
+    lenis=new Lenis({lerp:.1,smoothWheel:true});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(function(t){lenis.raf(t*1000)});
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  function toTop(h){
+    var el=h==='kontakt'?document.getElementById('povprasevanje'):null;
+    if(lenis){el?lenis.scrollTo(el,{offset:-80,duration:1.2}):lenis.scrollTo(0,{immediate:true})}
+    else{el?el.scrollIntoView():window.scrollTo(0,0)}
+  }
+
+  /* zamaknjen turkizen sloj se "poravna" kot pri tisku */
+  function regIn(scope,delay){
+    gsap.fromTo(scope.querySelectorAll('.reg'),{'--rx':'-14px','--ry':'-10px'},{'--rx':'4px','--ry':'3px',duration:1.2,ease:'expo.out',delay:delay||0});
+  }
+
+  /* domača stran – uvod: naslov po vrsticah, fotografije se nalepijo */
+  var rots=[-3,4,-1.5];
+  function heroIn(){
+    var tl=gsap.timeline({defaults:{ease:'expo.out'}});
+    tl.fromTo('.hero .eyebrow',{opacity:0},{opacity:1,duration:.6})
+      .fromTo('.hero h1 .ln>span',{yPercent:115,y:0},{yPercent:0,duration:1.1,stagger:.12},'-=.4')
+      .add(function(){regIn(document.querySelector('.hero'))},'-=.6')
+      .fromTo('.hero .sub',{opacity:0,y:20},{opacity:1,y:0,duration:.8},'-=.7')
+      .fromTo('.hero .btns',{opacity:0,y:20},{opacity:1,y:0,duration:.8},'-=.6')
+      .fromTo('.collage figure',{opacity:0,scale:1.25,y:-40,rotation:function(i){return rots[i]+10}},
+        {opacity:1,scale:1,y:0,rotation:function(i){return rots[i]},duration:.9,ease:'back.out(1.5)',stagger:.16},.35)
+      .fromTo('.collage .tag',{opacity:0,scale:.4,rotation:-20},{opacity:1,scale:1,rotation:-4,duration:.7,ease:'back.out(2.2)'},'-=.3');
+  }
+
+  /* podstran – uvod */
+  function bannerIn(view){
+    var b=view.querySelector('.banner');if(!b)return;
+    gsap.fromTo(b.querySelectorAll('.crumbs,h1,p,.btns'),{opacity:0,y:40},{opacity:1,y:0,duration:.9,ease:'expo.out',stagger:.08,overwrite:true});
+    regIn(b,.15);
+  }
+
+  /* razkrivanje ob drsenju – nastavi se šele, ko je stran vidna */
+  function reveal(els){
+    els.forEach(function(el){
+      gsap.fromTo(el,{opacity:0,y:50},{opacity:1,y:0,duration:1,ease:'expo.out',scrollTrigger:{trigger:el,start:'top 88%',once:true}});
+    });
+  }
+  function setupView(view){
+    if(reduce||view.dataset.anim)return;view.dataset.anim='1';
+    reveal(gsap.utils.toArray(view.querySelectorAll('section .sec-head,.svc,.step,section .split>div,.tbl')));
+    gsap.utils.toArray(view.querySelectorAll('.gallery figure')).forEach(function(el,i){
+      gsap.fromTo(el,{clipPath:'inset(100% 0% 0% 0%)'},{clipPath:'inset(0% 0% 0% 0%)',duration:1.2,ease:'expo.inOut',delay:(i%2)*.12,scrollTrigger:{trigger:el,start:'top 92%',once:true}});
+    });
+    if(view.dataset.view==='domov'){
+      /* paralaksa fotografij znotraj okvirjev */
+      gsap.utils.toArray('.collage figure:not(.p2) img').forEach(function(img,i){
+        gsap.fromTo(img,{yPercent:-6-i*2},{yPercent:6+i*2,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+      });
+    }
+  }
+
+  if(!reduce){
+    reveal([document.querySelector('.contact-box')]);
+    /* trak: ob hitrem drsenju pospeši */
+    var track=document.querySelector('.strip .track');
+    if(track){
+      var loop=gsap.to(track,{xPercent:-50,duration:32,ease:'none',repeat:-1}),ts=1;
+      gsap.ticker.add(function(){var v=lenis?Math.min(Math.abs(lenis.velocity||0),40):0;ts+=((1+v*.25)-ts)*.08;loop.timeScale(ts)});
+    }
+    /* trak napredka na vrhu */
+    gsap.to('#prog',{scaleX:1,ease:'none',scrollTrigger:{trigger:document.body,start:'top top',end:'bottom bottom',scrub:.3}});
+
+    if(fine){
+      /* kolaž se rahlo nagne za miško */
+      var col=document.querySelector('.collage .tilt'),hero=document.querySelector('.hero');
+      if(col&&hero){
+        var rx=gsap.quickTo(col,'rotationX',{duration:.8,ease:'power3'}),ry=gsap.quickTo(col,'rotationY',{duration:.8,ease:'power3'});
+        hero.addEventListener('pointermove',function(e){var r=col.getBoundingClientRect();ry(((e.clientX-r.left)/r.width-.5)*10);rx(-((e.clientY-r.top)/r.height-.5)*8)});
+        hero.addEventListener('pointerleave',function(){rx(0);ry(0)});
+      }
+      /* magnetni gumbi */
+      gsap.utils.toArray('.btn.primary,.cta-top').forEach(function(b){
+        var x=gsap.quickTo(b,'x',{duration:.5,ease:'power3'}),y=gsap.quickTo(b,'y',{duration:.5,ease:'power3'});
+        b.addEventListener('pointermove',function(e){var r=b.getBoundingClientRect();x((e.clientX-r.left-r.width/2)*.25);y((e.clientY-r.top-r.height/2)*.35)});
+        b.addEventListener('pointerleave',function(){x(0);y(0)});
+      });
+    }
+  }
+
+  window.PX={
+    route:function(h){
+      toTop(h);
+      var view=document.querySelector('.view.on');
+      if(view){
+        setupView(view);
+        if(!reduce){h==='domov'?heroIn():bannerIn(view)}
+      }
+      requestAnimationFrame(function(){ScrollTrigger.refresh()});
+    },
+    lock:function(on){if(lenis){on?lenis.stop():lenis.start()}}
+  };
+  window.PX.route((location.hash||'').replace('#','')||'domov');
+});
+</script>
+</body>
+</html>
