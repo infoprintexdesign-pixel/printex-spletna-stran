@@ -1,6 +1,6 @@
 # Ob vsaki spremembi na veji main obvesti drugega urejevalca.
-# Sprememba od Printex Design (infoprintexdesign-pixel) -> obvestilo za @zanresni
-# Sprememba od kogarkoli drugega (zanresni / Claude)   -> obvestilo za @infoprintexdesign-pixel
+# Spremembe od zanresni / Claude -> obvestilo za @infoprintexdesign-pixel (mail).
+# Spremembe od Printex Design ne sprožijo maila; zanresni jih dobi kot obvestilo od Clauda.
 # Obvestilo pride kot komentar na commit z omembo, zato GitHub pošlje mail in obvestilo v aplikaciji.
 name: Obvestilo o spremembi
 
@@ -24,8 +24,9 @@ jobs:
             const fromColleague =
               context.actor === 'infoprintexdesign-pixel' ||
               (head.author && head.author.email === 'info.printexdesign@gmail.com');
-            const komu = fromColleague ? '@zanresni' : '@infoprintexdesign-pixel';
-            const kdo = fromColleague ? 'Printex Design' : 'zanresni';
+            if (fromColleague) return;
+            const komu = '@infoprintexdesign-pixel';
+            const kdo = 'zanresni';
             const seznam = commits.map(c => `- ${c.message.split('\n')[0]}`).join('\n');
             await github.rest.repos.createCommitComment({
               owner: context.repo.owner,
