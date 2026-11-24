@@ -12,16 +12,17 @@ Ta repozitorij je celotna spletna stran **Printex Design**. Urejata jo dva člov
 - `site/index.html` – vsa stran v eni datoteki (HTML, CSS in JavaScript skupaj).
 - `site/img/` – logotip (`logo.png`) in fotografije (`.webp`).
 - `netlify.toml` – Netlify objavi samo mapo `site/` (ta datoteka z navodili ni javna).
-- Stran ima podstrani, ki se preklapljajo z `#` v naslovu: `#domov`, `#nalepke`, `#table-in-napisi`, `#avtografika`, `#tisk-na-tekstil`, `#kontakt`. Vsaka je `<div class="view" data-view="…">`.
+- Stran ima podstrani, ki se preklapljajo z `#` v naslovu: `#domov`, `#nalepke`, `#table-in-napisi`, `#polepitev-vozil`, `#tisk-na-tekstil`, `#kontakt`. Vsaka je `<div class="view" data-view="…">`.
 - Animacije uporabljajo knjižnico GSAP s CDN.
 
 ## Vsebina in odločitve
 - Podjetje: Printex Design. V nogi piše samo »© 2026 Printex Design« (ime s.p. je bilo namenoma odstranjeno).
 - Kraj (Ivančna Gorica) je bil namenoma odstranjen s strani.
-- Storitve (v tem vrstnem redu): **01 Nalepke, 02 Table in napisi, 03 Avtografika, 04 Tisk na tekstil.**
+- Storitev »Avtografika« je bila preimenovana v »Polepitev vozil« (star naslov `#avtografika` se samodejno preusmeri).
+- Storitve (v tem vrstnem redu): **01 Nalepke, 02 Table in napisi, 03 Polepitev vozil, 04 Tisk na tekstil.**
 - NE ponujamo: roll up stojal, digitalnega tiska (letaki, vizitke), 3D nalepk, 3D napisov, foto platen, reklamnih transparentov. Paketov za vozila ni.
 - Kontakt: +386 51 273 304, +386 40 539 658, info.printexdesign@gmail.com.
-- Galerija pri Avtografiki: kamper (prvi), Koc gradnje, Elektro Zupančič, Hočevar, prikolica. Brez napisov na slikah; registrske tablice so zamegljene.
+- Galerija pri Polepitvi vozil: kamper (prvi), Koc gradnje, Elektro Zupančič, Hočevar, prikolica. Brez napisov na slikah; registrske tablice so zamegljene.
 - Začetna stran: kolaž treh slik – kamper, majice EPJ (logotipi morajo biti vidni), oranžni KTM 233.
 
 ## Oblikovanje
