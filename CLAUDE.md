@@ -21,7 +21,7 @@ Ta repozitorij je celotna spletna stran **Printex Design**. Urejata jo dva člov
 - Storitev »Avtografika« je bila preimenovana v »Polepitev vozil« (star naslov `#avtografika` se samodejno preusmeri).
 - Storitve (v tem vrstnem redu): **01 Nalepke, 02 Table in napisi, 03 Polepitev vozil, 04 Tisk na tekstil.**
 - NE ponujamo: roll up stojal, digitalnega tiska (letaki, vizitke), 3D nalepk, 3D napisov, foto platen, reklamnih transparentov. Paketov za vozila ni.
-- Kontakt: +386 51 273 304, +386 40 539 658, info.printexdesign@gmail.com.
+- Kontakt: +386 51 273 304, +386 40 539 658, info@printexdesign.si (ta e-naslov je prikazan na strani).
 - Galerija pri Polepitvi vozil: kamper (prvi), Koc gradnje, Elektro Zupančič, Hočevar, prikolica. Brez napisov na slikah; registrske tablice so zamegljene.
 - Začetna stran: kolaž treh slik – kamper, majice EPJ (logotipi morajo biti vidni), oranžni KTM 233.
 

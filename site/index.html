@@ -533,7 +533,7 @@ html.js-anim .strip .track{animation:none}
           <p class="lead">Odgovorimo s ponudbo in osnutkom grafike.</p>
           <div class="info">
             <div><span>Telefon</span><b><a href="tel:+38651273304" style="text-decoration:none">+386 51 273 304</a><br><a href="tel:+38640539658" style="text-decoration:none">+386 40 539 658</a></b></div>
-            <div><span>E-pošta</span><b><a href="mailto:info.printexdesign@gmail.com" style="text-decoration:none">info.printexdesign@gmail.com</a></b></div>
+            <div><span>E-pošta</span><b><a href="mailto:info@printexdesign.si" style="text-decoration:none">info@printexdesign.si</a></b></div>
           </div>
         </div>
         <form id="f" novalidate>
@@ -547,13 +547,13 @@ html.js-anim .strip .track{animation:none}
           <p id="ok" role="status" style="display:none;border:1px solid var(--teal);border-radius:12px;padding:18px;background:rgba(94,200,193,.07)"><b>Hvala, povpraševanje je poslano.</b><br>Odgovorimo vam v najkrajšem možnem času.</p>
           <p id="err">Vpišite ime in kontakt, da vas lahko pokličemo nazaj.</p>
           <div id="result" role="status" aria-live="polite">
-            <b>Sporočila ni bilo mogoče poslati samodejno.</b> Pošljite ga na info.printexdesign@gmail.com.
+            <b>Sporočila ni bilo mogoče poslati samodejno.</b> Pošljite ga na info@printexdesign.si.
             <pre id="msg"></pre>
             <div class="btns" style="margin-top:0">
-              <a class="btn primary" id="mailBtn" href="mailto:info.printexdesign@gmail.com">Odpri v e-pošti <span class="arr">→</span></a>
+              <a class="btn primary" id="mailBtn" href="mailto:info@printexdesign.si">Odpri v e-pošti <span class="arr">→</span></a>
               <button class="btn ghost" type="button" id="copy">Kopiraj sporočilo</button>
             </div>
-            <p style="color:var(--muted);font-size:14px;margin-top:10px">Če se e-pošta ne odpre, kopirajte sporočilo in ga pošljite na info.printexdesign@gmail.com.</p>
+            <p style="color:var(--muted);font-size:14px;margin-top:10px">Če se e-pošta ne odpre, kopirajte sporočilo in ga pošljite na info@printexdesign.si.</p>
             <span id="copied" style="margin-left:10px;color:var(--muted)"></span>
           </div>
         </form>
@@ -579,7 +579,7 @@ html.js-anim .strip .track{animation:none}
         <p style="margin-top:16px;max-width:22em">Tisk, razrez in montaža.</p>
       </div>
       <div><h4>Ponudba</h4><ul><li><a href="#nalepke">Nalepke</a></li><li><a href="#table-in-napisi">Table in napisi</a></li><li><a href="#polepitev-vozil">Polepitev vozil</a></li><li><a href="#tisk-na-tekstil">Tisk na tekstil</a></li></ul></div>
-      <div><h4>Kontakt</h4><ul><li><a href="tel:+38651273304">+386 51 273 304</a></li><li><a href="tel:+38640539658">+386 40 539 658</a></li><li><a href="mailto:info.printexdesign@gmail.com">info.printexdesign@gmail.com</a></li></ul></div>
+      <div><h4>Kontakt</h4><ul><li><a href="tel:+38651273304">+386 51 273 304</a></li><li><a href="tel:+38640539658">+386 40 539 658</a></li><li><a href="mailto:info@printexdesign.si">info@printexdesign.si</a></li></ul></div>
     </div>
     <div class="copy"><span>© 2026 Printex Design</span><span>Tisk · Razrez · Montaža</span></div>
   </div>
@@ -624,7 +624,7 @@ html.js-anim .strip .track{animation:none}
   var W3F_KEY='d0f7de69-439a-4f84-8a84-b7acba1e3006';
   var btn=f.querySelector('button[type="submit"]'),ok=document.getElementById('ok');
   function fallback(){
-    document.getElementById('mailBtn').href='mailto:info.printexdesign@gmail.com?subject='+encodeURIComponent('Povpraševanje – '+v('ime'))+'&body='+encodeURIComponent(msg.textContent);
+    document.getElementById('mailBtn').href='mailto:info@printexdesign.si?subject='+encodeURIComponent('Povpraševanje – '+v('ime'))+'&body='+encodeURIComponent(msg.textContent);
     res.classList.add('show');document.getElementById('copied').textContent='';
   }
   f.addEventListener('submit',function(e){
